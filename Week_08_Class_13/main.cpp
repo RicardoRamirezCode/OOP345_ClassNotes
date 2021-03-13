@@ -6,6 +6,11 @@
 #include <functional>
 using namespace std;
 
+void foo(double val)
+{
+	cout << val << endl;
+}
+
 int main()
 {
 	// always the case it is a collection of objects (words, 'cars', integers, etc) and we need to do 'something' with that collection
@@ -132,8 +137,46 @@ int main()
 	for_each(coll.begin(), coll.end(), print);
 
 
+	cout << "\n\nReference Wrappers\n";
 	// Reference wrapper
 	// #include <functional>
-	// 1:23:00
+	
+	// allows us to create a reference, or things that look like a reference, 
+	double val = 1.2;
+	std::reference_wrapper<double> refW(val);
+	// both reference refW and val act as a name for same object
+	cout << val << " <-> " << refW << endl;
 
+	val = 3.4;
+	cout << val << " <-> " << refW << endl;
+	// refW also changes as it references the same val
+
+	// this is equvialent (in terms of functionality) to:
+	double& refD = val;
+
+	// reference wrapper is useful as sometimes c++ language forbids creation of references or use of references
+	// for example with vector
+	//std::vector<double&> vDR;
+	// this would give a compliation error
+	// C++ does not allow collection of references [arrays, vectors, staticaly/dynamically allocated array of references]
+	val = 1.0;
+	std::vector<std::reference_wrapper<double>> vRW;
+	vRW.push_back(val);
+
+	cout << val << " <-> " << vRW[0] << endl;
+	val = 2.0;
+	cout << val << " <-> " << vRW[0] << endl;
+	// acts like I have a reference in the vector
+
+	// you can create a reference wrapper by calling the function:
+	auto rw = std::ref(val);		// std::ref creates a reference wrapper
+
+
+	///////////////////
+	// Bound functions
+	// created function foo defined at start of file
+	// if you find you constantly call that function with a certain value you can bind it
+
+	auto boundFoo = std::bind(foo, 42);
+	boundFoo();
 }
